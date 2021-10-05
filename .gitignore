@@ -1,6 +1,6 @@
-!/data/store/.gitkeep
-!/data/processed/.gitkeep
+!data/store/.gitkeep
+!data/processed/.gitkeep
 
-/data/store/*
-/data/processed/*
-/data/*
+data/store/*
+data/processed/*
+data/*
