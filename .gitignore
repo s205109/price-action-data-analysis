@@ -1,3 +1,4 @@
 !/data/store/.gitkeep
 !/data/processed/.gitkeep
-data/*
+/data/store/*
+/data/processed/*
