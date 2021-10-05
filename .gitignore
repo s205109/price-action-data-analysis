@@ -1,2 +1,3 @@
-!/data/.gitkeep
+!/data/store/.gitkeep
+!/data/processed/.gitkeep
 data/*
