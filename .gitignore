@@ -1,8 +1,6 @@
-
-/data/store/*
-/data/processed/*
-
 !/data/store/.gitkeep
 !/data/processed/.gitkeep
 
+/data/store/*
+/data/processed/*
 /data/*
