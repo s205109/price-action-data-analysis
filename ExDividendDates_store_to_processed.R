@@ -78,3 +78,13 @@ arranged_dividend_data <- arrange(dividend_data, dividend_data$Ticker, dividend_
 # Write it to a CSV file
 write.csv(arranged_dividend_data, paste(processed_fidelity_folder, "Fidelity_Dividend_Data.csv", sep="/"), row.names = FALSE)
 
+
+# Fix formatting (Standard R Date format and convert dividend numbers to Double)
+read_df <- read.csv(paste(processed_fidelity_folder, "Fidelity_Dividend_Data.csv", sep="/"))
+read_df$Dividend <- as.double(read_df$Dividend)
+read_df$Announcement.Date <- mdy(read_df$Announcement.Date)
+read_df$Record.Date <- mdy(read_df$Record.Date)
+read_df$Ex.Date <- mdy(read_df$Ex.Date)
+read_df$Pay.Date <- mdy(read_df$Pay.Date)
+
+write.csv(read_df, paste(processed_fidelity_folder, "Fidelity_Dividend_Data_REV2.csv", sep="/"), row.names = FALSE)
