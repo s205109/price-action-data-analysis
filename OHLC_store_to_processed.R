@@ -202,10 +202,6 @@ for (fd in NASDAQ_5Y1d_files) {
 
 
 
-###########################
-#     DO THIS AT HOME     #
-###########################
-
 for (fd in NASDAQ_3M5m_files) {
   input_file_path <- paste(NASDAQ_3M5m_data_store_path, fd, sep="/")
   fd_ticker <- str_split_fixed(fd, pattern="_", n = 3)[,2]
