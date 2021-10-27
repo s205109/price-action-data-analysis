@@ -146,9 +146,8 @@ gap_pie_chart <- ggplot(data=s, aes(x="", y=percentage, fill = labels)) +
         axis.ticks = element_blank(),
         axis.title = element_blank(),
         plot.title = element_text(hjust = 0.5, size = 10)) +
-  ggtitle("Number of Gaps Filled Within 1 Trading Day (AAPL, 3 Years)") + 
+  ggtitle("Number of Gaps Filled Within 1 Trading Day (WMT, 3 Years)") + 
   scale_fill_manual(values = colors)
-
 gap_pie_chart
 
 #############################
@@ -157,6 +156,6 @@ gap_pie_chart
 gap_pie_chart2 <- plot_ly(data=s, labels= ~labels, values = ~percentage,
                           type = 'pie', sort=FALSE,
                           marker= list(colors=colors, line=list(color="black", width=1))) %>%
-  layout(title="Number of Gaps in AAPL Stock Over 3 Years")
+  layout(title="Number of Gaps in WMT Stock Over 3 Years")
 
 gap_pie_chart2
