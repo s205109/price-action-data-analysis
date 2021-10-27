@@ -56,6 +56,11 @@ for(i in seq(from=1, to=nrow(df))){
     b = df[i,]$Open - df[i,]$Close
     b_avg = (b/2) + df[i,]$Close
   }
+  if (df[i,]$Open == df[i,]$Close) {
+    direction = "NONE"
+    b = 0
+    b_avg = df[i,]$Close
+  }
   price_direction = c(price_direction,direction)
   
   # Set price range
@@ -119,6 +124,8 @@ MARUBOZU_BEAR_IDEAL     = "IDEAL BEAR MARUBOZU"
 SPINNER_COMMON          = "COMMON SPINNER"
 SPINNING_TOP            = "SPINNING TOP"
 SPINNING_BOTTOM         = "SPINNING BOTTOM"
+
+candlesticks = c()
 
 # Determine classification for each candlestick
 for(i in seq(from=1, to=nrow(df))){
@@ -335,6 +342,17 @@ for(i in seq(from=1, to=nrow(df))){
     candlestick <- SPINNING_BOTTOM
   }
   
-  print(paste(current$Date, candlestick, sep=" "))
+  candlesticks = c(candlesticks, candlestick)
+  # print(paste(current$Date, candlestick, sep=" "))
 
 }
+
+df$candlestick_type = candlesticks
+df
+
+
+
+
+
+
+
