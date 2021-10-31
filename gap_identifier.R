@@ -23,7 +23,9 @@ DOW30_5Y1d_files <- list.files(
 
 # Data Frame for holding gap information for the DOW 30 stocks
 gap_info_df <- data.frame(Ticker=character(),
-                          Gap_Fill_Percentage=double())
+                          Gap_Fill_Percentage=double(),
+                          Upward_Gap_Fill_Percentage=double(),
+                          Downward_Gap_Fill_Percentage=double())
 
 # Iterate through stock CSV files
 for(j in seq(from=1, to=length(DOW30_5Y1d_files))){
@@ -36,8 +38,6 @@ for(j in seq(from=1, to=length(DOW30_5Y1d_files))){
   gap_filled <- c()                   # A bool flag if gap was filled on day i
   swing <- c()                        # Size of price movement in direction of 
                                       #    gap fill on day i
-  
-  # 
   for (i in seq(from=1, to=nrow(df))) {
     
     #####################################
@@ -110,13 +110,29 @@ for(j in seq(from=1, to=length(DOW30_5Y1d_files))){
   ############################
   # GAPS FILLED / TOTAL GAPS #
   ############################
-  d <- df %>% filter(gap_length != 0)
-  s <- d %>% group_by(gap_filled) %>% summarize(counts = n(), percentage = n()/nrow(d))
-  gaps_filled_percentage <- (s %>% filter(gap_filled == TRUE))$percentage
+  gaps_df <- df %>% filter(gap_length != 0)
+  gaps_summary <- gaps_df %>% group_by(gap_filled) %>% summarize(counts = n(), percentage = n()/nrow(gaps_df))
+  gaps_filled_percentage <- (gaps_summary %>% filter(gap_filled == TRUE))$percentage
   
-  gap_info_df[nrow(gap_info_df)+1,] <- c(df[1,]$Ticker, gaps_filled_percentage[1])
+  ####################################
+  # UPWARD GAPS FILLED / TOTAL GAPS  #
+  ####################################
+  upward_gaps_df <- df %>% filter(gap_length > 0)
+  upward_gaps_summary <- upward_gaps_df %>% group_by(gap_filled) %>% summarize(counts = n(), percentage = n()/nrow(upward_gaps_df))
+  upward_gaps_filled_percentage <- (upward_gaps_summary %>% filter(gap_filled == TRUE))$percentage
+  
+  #######################################
+  #  DOWNWARD GAPS FILLED / TOTAL GAPS  #
+  #######################################
+  downward_gaps_df <- df %>% filter(gap_length < 0)
+  downward_gaps_summary <- downward_gaps_df %>% group_by(gap_filled) %>% summarize(counts = n(), percentage = n()/nrow(downward_gaps_df))
+  downward_gaps_filled_percentage <- (downward_gaps_summary %>% filter(gap_filled == TRUE))$percentage
+  
+  
+  gap_info_df[nrow(gap_info_df)+1,] <- c(df[1,]$Ticker, gaps_filled_percentage[1], upward_gaps_filled_percentage[1], downward_gaps_filled_percentage[1])
 }
 
+gap_info_df
 
 ###################################################
 #      Top 10 DOW 30 Stocks that Gap Filled       #
@@ -128,6 +144,25 @@ top10_gap_fillers_barplot <- ggplot(data=top10_gap_fillers, aes(x=Ticker, y=Gap_
   labs(title="Top 10 Gap Fillers in the DOW 30")
 top10_gap_fillers_barplot
 
+###################################################
+#   Top 10 DOW 30 Stocks that Gap Filled (Up)     #
+###################################################
+top10_upward_gap_fillers <- arrange(gap_info_df, desc(Upward_Gap_Fill_Percentage)) %>% slice(1:10)
+top10_upward_gap_fillers_barplot <- ggplot(data=top10_upward_gap_fillers, aes(x=Ticker, y=Upward_Gap_Fill_Percentage)) + 
+  geom_bar(stat="identity", fill="steelblue") +
+  labs(y="% of Upward Gaps Filled", x="Ticker") +
+  labs(title="Top 10 Upward Gap Fillers in the DOW 30")
+top10_upward_gap_fillers_barplot
+
+###################################################
+#   Top 10 DOW 30 Stocks that Gap Filled (Down)   #
+###################################################
+top10_downward_gap_fillers <- arrange(gap_info_df, desc(Downward_Gap_Fill_Percentage)) %>% slice(1:10)
+top10_downward_gap_fillers_barplot <- ggplot(data=top10_downward_gap_fillers, aes(x=Ticker, y=Downward_Gap_Fill_Percentage)) + 
+  geom_bar(stat="identity", fill="steelblue") +
+  labs(y="% of Downward Gaps Filled", x="Ticker") +
+  labs(title="Top 10 Downward Gap Fillers in the DOW 30")
+top10_downward_gap_fillers_barplot
 
 
 #############################
@@ -135,7 +170,7 @@ top10_gap_fillers_barplot
 #############################
 colors <- c("green", "red")
 labels <- c("Gap Not Filled", "Gap Filled")
-gap_pie_chart <- ggplot(data=s, aes(x="", y=percentage, fill = labels)) + 
+gap_pie_chart <- ggplot(data=gaps_summary, aes(x="", y=percentage, fill = labels)) + 
   geom_col(color="black") +
   coord_polar("y", start=0) +
   geom_text(aes(label = paste0(round(percentage*100), "%")),
@@ -146,14 +181,14 @@ gap_pie_chart <- ggplot(data=s, aes(x="", y=percentage, fill = labels)) +
         axis.ticks = element_blank(),
         axis.title = element_blank(),
         plot.title = element_text(hjust = 0.5, size = 10)) +
-  ggtitle("Number of Gaps Filled Within 1 Trading Day (WMT, 3 Years)") + 
+  ggtitle("% of Gaps Filled Within 1 Trading Day (WMT, 3 Years)") + 
   scale_fill_manual(values = colors)
 gap_pie_chart
 
 #############################
 #   PIE CHART FOR 1 STOCK   # plot_ly
 #############################
-gap_pie_chart2 <- plot_ly(data=s, labels= ~labels, values = ~percentage,
+gap_pie_chart2 <- plot_ly(data=gaps_summary, labels= ~labels, values = ~percentage,
                           type = 'pie', sort=FALSE,
                           marker= list(colors=colors, line=list(color="black", width=1))) %>%
   layout(title="Number of Gaps in WMT Stock Over 3 Years")
