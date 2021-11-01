@@ -29,6 +29,14 @@ DOW30_5Y1d_files <- list.files(
 # DOW30 Earnings Data Frame
 df_earnings <- read.csv(paste(DOW30_earnings_data_proc_path, "DOW30_Earnings.csv", sep="/"))
 
+# Data Frame for holding boxplot pre/post earnings means
+boxplot_df <- data.frame(Ticker=character(),
+                          Pre_Return_Mean=double(),
+                          Pre_Range=double(),
+                          Post_Return_Mean=double(),
+                          Post_Range=double())
+
+
 for(k in seq(from=1, to=length(DOW30_5Y1d_files))){
   # Get Pricing Data for current stock
   df_pricing <- read.csv(paste(DOW30_5Y1d_data_proc_path, DOW30_5Y1d_files[k], sep="/"))
@@ -134,9 +142,33 @@ for(k in seq(from=1, to=length(DOW30_5Y1d_files))){
   current_earnings_data <- current_earnings_data %>% mutate(Post_Returns = post_returns)
   
   current_earnings_data[is.na(current_earnings_data)] <- 1
-
-  p <- boxplot(current_earnings_data %>% select(Pre_Returns, Post_Returns), ylab="Returns", main=paste("Statistical Returns Pre- and Post-Earnings Day for ", (current_earnings_data %>% select(Ticker))[1,]))
+  
+  #p <- boxplot(current_earnings_data %>% select(Pre_Returns, Post_Returns), ylab="Returns", main=paste("Statistical Returns Pre- and Post-Earnings Day for ", (current_earnings_data %>% select(Ticker))[1,]))
+  
+  mean_pre <- mean(current_earnings_data$Pre_Returns)
+  max_pre <- max(current_earnings_data$Pre_Returns)
+  min_pre <- min(current_earnings_data$Pre_Returns)
+  range_pre <- max_pre - min_pre
+  
+  mean_post <- mean(current_earnings_data$Post_Returns)
+  max_post <- max(current_earnings_data$Post_Returns)
+  min_post <- min(current_earnings_data$Post_Returns)
+  range_post <- max_post - min_post
+  
+  boxplot_df[nrow(boxplot_df)+1,] <- c(current_ticker, mean_pre, range_pre, mean_post, range_post)
+  
 }
 
 current_earnings_data
+boxplot_df
 
+cols = c(2, 3, 4, 5);    
+boxplot_df[,cols] = apply(boxplot_df[,cols], 2, function(x) as.numeric(as.character(x)));
+
+boxplot(boxplot_df %>% select(Pre_Return_Mean, Post_Return_Mean), ylab="Average Returns", main="Average of Returns During Pre- and Post-Earnings Period")
+boxplot(boxplot_df %>% select(Pre_Range, Post_Range), ylab="Range of Returns", main="Variation Range of Returns During Pre- and Post-Earnings Period")
+
+pre_range_avg <- mean(boxplot_df$Pre_Range)
+post_range_avg <- mean(boxplot_df$Post_Range)
+pre_range_avg
+post_range_avg
