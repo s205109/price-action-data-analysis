@@ -27,6 +27,8 @@ gap_info_df <- data.frame(Ticker=character(),
                           Upward_Gap_Fill_Percentage=double(),
                           Downward_Gap_Fill_Percentage=double())
 
+gap_info_df
+
 # Iterate through stock CSV files
 for(j in seq(from=1, to=length(DOW30_5Y1d_files))){
   df <- read.csv(paste(DOW30_5Y1d_data_proc_path, DOW30_5Y1d_files[j], sep="/"))
@@ -105,7 +107,6 @@ for(j in seq(from=1, to=length(DOW30_5Y1d_files))){
   df$gap_length <- gap_length
   df$swing <- swing
   df$gap_filled <- gap_filled
-  df
   
   ############################
   # GAPS FILLED / TOTAL GAPS #
@@ -132,7 +133,12 @@ for(j in seq(from=1, to=length(DOW30_5Y1d_files))){
   gap_info_df[nrow(gap_info_df)+1,] <- c(df[1,]$Ticker, gaps_filled_percentage[1], upward_gaps_filled_percentage[1], downward_gaps_filled_percentage[1])
 }
 
-gap_info_df
+cols = c(2, 3, 4);    
+gap_info_df[,cols] = apply(gap_info_df[,cols], 2, function(x) as.numeric(as.character(x)));
+
+boxplot(gap_info_df %>% select(Gap_Fill_Percentage), names="Gaps Filled", ylab="Gap Fill Percentage", main="DOW 30 Total Gap Fill Percentage Statistics")
+
+boxplot(gap_info_df %>% select(Upward_Gap_Fill_Percentage, Downward_Gap_Fill_Percentage), names=c("Upward Gaps Filled", "Downward Gaps Filled"), ylab="Gap Fill Percentage", main="DOW 30 Upward vs. Downward Gap Fill Percentage Statistics")
 
 ###################################################
 #      Top 10 DOW 30 Stocks that Gap Filled       #
