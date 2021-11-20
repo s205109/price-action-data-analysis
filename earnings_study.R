@@ -170,5 +170,9 @@ boxplot(boxplot_df %>% select(Pre_Range, Post_Range), ylab="Range of Returns", m
 
 pre_range_avg <- mean(boxplot_df$Pre_Range)
 post_range_avg <- mean(boxplot_df$Post_Range)
+pre_range_stddev <- sd(boxplot_df$Pre_Range)
+post_range_stddev <- sd(boxplot_df$Post_Range)
 pre_range_avg
+pre_range_stddev
 post_range_avg
+post_range_stddev

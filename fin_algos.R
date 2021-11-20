@@ -1,6 +1,6 @@
 
 # Max Drawdown Function
-mdd <- function(returns, ex_stat=NaN) {
+mdd <- function(rets, ex_stat=NaN) {
   r <- 1
   investment <- 1
   peak <- -100000
@@ -13,12 +13,12 @@ mdd <- function(returns, ex_stat=NaN) {
                        Drawdown=double(),
                        Drawdown_Percent=double())
   
-  for(i in seq(from=1, to=length(returns))){
+  for(i in seq(from=1, to=length(rets))){
     # Find Returns
-    r <- as.double(returns[i])
+    r <- as.double(rets[i])
 
     # Calculate the current investment amount
-    investment <- investment * returns[i]
+    investment <- investment * rets[i]
 
     # Update peak if necessary
     if (investment > peak) {
