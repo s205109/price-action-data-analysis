@@ -1,0 +1,11 @@
+name: phase6_shiny-app
+title:
+username:
+account: dpsciarrino
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5236859
+bundleId: 5312130
+url: https://dpsciarrino.shinyapps.io/phase6_shiny-app/
+when: 1638321905.15621
+lastSyncTime: 1638321905.15625

@@ -87,3 +87,20 @@ mean(as.double(base_return_summary$StandardDev))
 
 barplot(as.double(base_return_summary$Drawdown), main="Benchmark Max Drawdowns (Buy-and-Hold Strategy)", names.arg=base_return_summary$Ticker, las=2, cex.names=0.5, col="orange")
 mean(as.double(base_return_summary$Drawdown))
+
+df_pricing <- df_pricing %>% select("Close")
+df_pricing$index <- 1:nrow(df_pricing)
+
+idx <- df_pricing$index
+price <- df_pricing$Close
+data <- data.frame(xValue, yValue)
+ggplot(data, aes(x=xValue, y=yValue)) + geom_line()
+
+df_pricing
+
+
+
+
+
+
+
